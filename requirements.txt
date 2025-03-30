@@ -2,3 +2,4 @@ streamlit
 elevenlabs
 requests
 python-dotenv
+loguru
