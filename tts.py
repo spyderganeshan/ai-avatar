@@ -1,21 +1,28 @@
-from elevenlabs import ElevenLabs
-import os
-from config.settings import ELEVENLABS_API_KEY
+import io                                               # handling in-memory byte streams.
+from elevenlabs import ElevenLabs                       # Importing ElevenLabs for text-to-speech conversion.          
+from config.settings import ELEVENLABS_API_KEY,VOICE_ID,OUTPUT_FORMAT,MODEL_ID
 from loguru import logger
 
-def generate_speech(text):
+def generate_speech(text: str) -> io.BytesIO:
+    """
+    Converts the given text into speech using ElevenLabs' text-to-speech API.
+    Args:
+        text (str): The input text to be converted into speech.
+    Returns:
+        io.BytesIO: An in-memory byte stream containing the generated speech in MP3 format.
+    """
     client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
     logger.info("client created")
-    audio_stream = client.text_to_speech.convert(
-        voice_id="21m00Tcm4TlvDq8ikWAM",
-        output_format="mp3_44100_128",
-        text=text,
-        model_id="eleven_multilingual_v2",
+    audio_stream        = client.text_to_speech.convert(
+        voice_id        =VOICE_ID,
+        output_format   =OUTPUT_FORMAT,
+        text            =text,
+        model_id        =MODEL_ID,
     )
 
-    output_file = "static/output.mp3"
-    with open(output_file, "wb") as f:
-        for chunk in audio_stream:
-            f.write(chunk)
-        logger.info("speech file created")
-    return output_file
+    audio_bytes = io.BytesIO()
+    for chunk in audio_stream:
+        audio_bytes.write(chunk)                        # Write chunk-by-chunk to memory
+    audio_bytes.seek(0)                                 # Reset stream position for reading
+    logger.info("Speech generation completed in memory")
+    return audio_bytes                                  # Return BytesIO object instead of file path

@@ -1,14 +1,27 @@
-# import sys
-# import os
-import time
-import streamlit as st
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from tts import generate_speech
+import  time
+import  streamlit as st
+from tts    import generate_speech
 from avatar import upload_audio, generate_avatar, get_avatar_video
 from loguru import logger
-
+from config.settings import PIN
 st.set_page_config(page_title="AI Avatar Generator", layout="centered")
 
+###################################### authentication settings #####################################
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+if not st.session_state.authenticated:
+    user_pin = st.text_input("Enter Access PIN:", type="password")
+    if user_pin:  
+        if user_pin == PIN:
+            st.session_state.authenticated = True
+            st.rerun()  
+        else:
+            st.warning("Incorrect PIN. Please try again.")
+            st.stop()
+    else:
+        st.stop()  
+
+######################################### app layout ################################################
 st.title("🎭 AI Avatar Generator")
 st.write("Enter text, generate a talking AI avatar, and watch the result!")
 
