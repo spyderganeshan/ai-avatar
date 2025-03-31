@@ -1,6 +1,6 @@
 import requests
 import io
-from config.settings import DID_API_KEY,STATUS_URL,CREATE_AVATAR_URL,UPLOAD_URL
+from config.settings import DID_API_KEY,STATUS_URL,CREATE_AVATAR_URL,UPLOAD_URL,PRESENTER_ID,DRIVER_ID
 from loguru import logger
 
 def upload_audio(audio_stream: io.BytesIO) -> str:
@@ -35,8 +35,8 @@ def generate_avatar(audio_url: str) -> str:
     headers = {"Authorization": f"Basic {DID_API_KEY}"}
     payload = {
         "script": {"type": "audio", "audio_url": audio_url},
-        "presenter_id": "amy-Aq6OmGZnMt",
-        "driver_id": "Vcq0R4a8F0",
+        "presenter_id": PRESENTER_ID,
+        "driver_id": DRIVER_ID,
     }
     logger.info(f"senting post request to {CREATE_AVATAR_URL}", )
     response = requests.post(CREATE_AVATAR_URL, json=payload, headers=headers)
