@@ -45,12 +45,13 @@ if st.button("Generate Avatar"):
 
         # Polling for video URL
         video_url = None
-        for _ in range(30):  # Check for up to 30 seconds
-            time.sleep(3)
-            logger.info("Checking for video URL...")
-            video_url = get_avatar_video(talk_id)
-            if video_url:
-                break
+        with st.spinner("Checking for video URL..."):
+            for _ in range(30):  # Check for up to 30 seconds
+                time.sleep(3)
+                logger.info("Checking for video URL...")
+                video_url = get_avatar_video(talk_id)
+                if video_url:
+                    break
 
         if video_url:
             st.video(video_url)
